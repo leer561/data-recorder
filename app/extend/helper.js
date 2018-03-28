@@ -12,8 +12,8 @@ module.exports = {
 			case '192tt':
 				const ul = $('.piclist > ul li')
 				ul.each((i, el) => {
-					let text = $(el).html()
-					let num = text.match(/(\d*)(?=\.html)/g)[0]
+					const text = $(el).html()
+					const num = text.match(/(\d*)(?=\.html)/g)[0]
 					if (num <= webSite.last) return
 					tempArray.push({
 						url: `http://www.192tt.com/meitu/${num}.html`,
@@ -22,5 +22,14 @@ module.exports = {
 				})
 		}
 		return tempArray
+	},
+	async getPage(tag, $) {
+		switch (tag) {
+			case '192tt':
+				const h1 = $('h1').text()
+				const img = $('center img').attr('lazysrc')
+
+				return h1
+		}
 	}
 }

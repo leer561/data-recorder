@@ -13,7 +13,15 @@ module.exports = {
 		if (!ctx.app.sites || !ctx.app.sites.length) return
 		for (let webSite of ctx.app.sites) {
 			const list = await ctx.service.compare.find(webSite)
-			console.log('list',list)
+
+			// Determine if there is an update
+			if (!list.length) return
+
+			list.forEach(async (ele, index) => {
+				const page = await ctx.service.page.getPage(ele, webSite.tag)
+
+			})
+
 		}
 	}
 }
