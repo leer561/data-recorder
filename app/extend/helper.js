@@ -20,9 +20,7 @@ module.exports = {
 						tag: num
 					})
 				})
-				return tempArray
-			default:
-				return tempArray
 		}
+		return tempArray
 	}
 }

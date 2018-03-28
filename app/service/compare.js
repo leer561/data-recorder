@@ -13,7 +13,7 @@ class CompareService extends Service {
 		try {
 			const page = await request.get(webSite.site, (error, response, body) => body)
 			const $ = cheerio.load(page)
-			return this.ctx.helper.getTags(webSite,$)
+			return this.ctx.helper.getTags(webSite, $)
 		} catch (err) {
 			this.app.logger.error('can not get webSite', webSite.site)
 			return []
