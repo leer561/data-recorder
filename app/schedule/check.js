@@ -17,10 +17,10 @@ module.exports = {
 			// Determine if there is an update
 			if (!list.length) return
 
-			list.forEach(async (ele, index) => {
-				const page = await ctx.service.page.getPage(ele, webSite.tag)
+			// Reverse the array to save updates tag
+			list.reverse()
 
-			})
+			list.forEach(ele => ctx.service.page.save(webSite, ele))
 
 		}
 	}
