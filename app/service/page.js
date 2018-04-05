@@ -11,24 +11,20 @@ class Page extends Service {
 	async save(webSite, ele) {
 		const page = await this.ctx.helper.getLastPage(webSite.tag, ele)
 
-		if (!page) return
+		if (!page) return 0
 		const imagesArray = await this.ctx.helper.getImages(webSite.tag, page)
 		const images = imagesArray.toString()
 		// save data
-		if (!images || !images.length) return
+		if (!images || !images.length) return 0
 		const article = {
 			title: page.title,
 			images,
 			time: new Date()
 		}
-
 		// save data
-		const result = await this.ctx.app.mysql.insert('pages', article)
-		if (result.affectedRows !== 1) return
-		// update last tag
-		webSite.last = ele.tag
-		return this.ctx.app.mysql.update('sites', webSite)
-
+		return this.ctx.app.mysql.insert('pages', article)
+			.then(()=> ele.tag)
+			.then(null,()=> 0)
 	}
 }
 
