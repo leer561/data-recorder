@@ -29,5 +29,15 @@ module.exports = appInfo => {
 		agent: false,
 	}
 
+	// qiniu
+	config.qiniu = {
+		auth: ['yVTzEQA3x3mPeEbE1INwbvjPty2tumnwJ0dKbCvG', 'QyMqrcgggs0IENut5SvqHatpw5MjV3DYq6rL9-9G'],
+		options: {
+			scope: 'chinesegril',
+			expires: 345600
+		},
+		zone:'qiniu.zone.Zone_na0'
+	}
+
 	return config
 }

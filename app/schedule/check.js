@@ -21,7 +21,6 @@ module.exports = {
 
 			// get last tag
 			const successTags = await Promise.all(successPages)
-			console.log('successTags',successTags)
 			webSite.last = Math.max(...successTags)
 			ctx.app.mysql.update('sites', webSite)
 		}
