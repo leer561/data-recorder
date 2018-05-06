@@ -32,29 +32,62 @@ class QiniuService extends Service {
 
 	async upload(page) {
 		const images = page.images.split(',')
-		try{
-			images.forEach(item => {
-				let readableStream = request(item)
-				let tempData = item.split('/')
-				let key = tempData[tempData.length - 1].split('.')[0]
-				// this.formUploader.putStream(this.uploadToken, key, readableStream, this.putExtra,
-				// 	(respErr, respBody, respInfo) => {
-				// 		if (respErr) {
-				// 			console.log('item',item)
-				// 			console.log('respErr',respErr)
-				// 		}
-				// 		if (respInfo.statusCode == 200) {
-				// 			console.log(respBody)
-				// 		} else {
-				// 			console.log(respInfo.statusCode)
-				// 			console.log(respBody)
-				// 		}
-				// 	})
-			})
-		}catch (err){
-			// console.log('page',images)
-			// console.log('err',err)
-		}
+
+		images.forEach(item => {
+			let options = {
+				url: item,
+				headers: {
+					'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36'
+				}
+			};
+			request(options)
+				.on('response', response => {
+					if (response.statusCode !== 200) return
+					let tempData = item.split('/')
+					let key = tempData[tempData.length - 1].split('.')[0]
+					console.log('key',item)
+					console.log(response.statusCode) // 200
+					console.log('content-type',response.headers['content-type']) // 'image/png'
+					// try {
+					// 	this.formUploader.putStream(this.uploadToken, key, response, this.putExtra,
+					// 		(respErr, respBody, respInfo) => {
+					// 			if (respErr) {
+					// 				console.log('item', item)
+					// 				console.log('respErr', respErr)
+					// 			}
+					// 			if (respInfo.statusCode == 200) {
+					// 				console.log(respBody)
+					// 			} else {
+					// 				console.log(respInfo.statusCode)
+					// 				console.log(respBody)
+					// 			}
+					// 		})
+					// } catch (e) {
+					// 	console.log('e', e)
+					// }
+				})
+			// let readableStream = request.get(item)
+			// 	.on('error', err => console.log(err))
+			// let tempData = item.split('/')
+			// let key = tempData[tempData.length - 1].split('.')[0]
+			// try {
+			// 	this.formUploader.putStream(this.uploadToken, key, readableStream, this.putExtra,
+			// 		(respErr, respBody, respInfo) => {
+			// 			if (respErr) {
+			// 				console.log('item', item)
+			// 				console.log('respErr', respErr)
+			// 			}
+			// 			if (respInfo.statusCode == 200) {
+			// 				console.log(respBody)
+			// 			} else {
+			// 				console.log(respInfo.statusCode)
+			// 				console.log(respBody)
+			// 			}
+			// 		})
+			// } catch (e) {
+			// 	console.log('e', e)
+			// }
+		})
 
 	}
 }
