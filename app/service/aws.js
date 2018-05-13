@@ -26,8 +26,8 @@ class AwsService extends Service {
 		let awsImages = []
 		let promiseAll = []
 		let requestAll = []
-
 		images.forEach(item => {
+			if(!item) return
 			let options = {
 				url: item,
 				headers: {
