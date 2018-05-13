@@ -14,12 +14,28 @@ module.exports = {
 		// 判断是否有任务
 		if (!list || !list.length) return
 
-		// 循环任务
-		// list.forEach(item => {
+		// // 循环任务
+		// list.forEach(async (item,index) => {
 		// 	// 分解获取图片
-		// 	ctx.service.aws.upload(item)
+		// 	let tempData = await ctx.service.aws.upload(item)
 		//
+		// 	// 判断aws s3是否存储成功
+		// 	if(tempData.length) {
+		// 		list.images = tempData
+		// 	}
+		// 	ctx.app.mysql.insert('grils', list)
 		// })
-		ctx.service.aws.upload(list[0])
+
+		async function f() {
+			console.log('list[0]',list[0])
+			let page = list[0]
+			let tempData = await ctx.service.aws.upload(page)
+			page.images = tempData.toString()
+			page.original_id = page.id
+			delete page.id
+			console.log('tempData',tempData)
+			ctx.app.mysql.insert('grils', page)
+		}
+		f()
 	}
 }

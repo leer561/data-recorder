@@ -8,14 +8,25 @@
 const Service = require('egg').Service
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
-const request = require('request')
+const request = require('request-promise-native')
 const uuidv1 = require('uuid/v1')
+const Q = require('q')
 
 class AwsService extends Service {
 
 	async upload(page) {
 		const images = page.images.split(',')
 		if (!images.length) return
+
+		// get ContentType
+		let typeArray = images[0].split('.')
+		let ContentType = `image/${typeArray[typeArray.length - 1]}`
+
+		// set promise arrary
+		let awsImages = []
+		let promiseAll = []
+		let requestAll = []
+
 		images.forEach(item => {
 			let options = {
 				url: item,
@@ -24,22 +35,24 @@ class AwsService extends Service {
 				},
 				encoding: null
 			}
-
-			request(options, (error, response, body) => {
-				if (response.statusCode !== 200) return
-
-				// check if it is image
-				let type = response.headers['content-type']
-				if (!type.includes('image')) return
-				// let imageType = type.split('/')[1]
-				// let name = `${uuidv1()}.${imageType}`
-
-				// upload
-				const params = {Bucket: 'grils', Key: uuidv1(), Body: body, ContentType: type}
-				s3.upload(params, (err, data) => console.log('data', data))
-			})
+			requestAll.push(request(options))
 		})
 
+		// get all request data
+		let reqAllData = await Q.allSettled(requestAll)
+		reqAllData.forEach((result, index) => {
+			if (result.state === 'fulfilled') {
+				const params = {Bucket: 'grils', Key: uuidv1(), Body: result.value, ContentType}
+				let uploadS3 = s3.upload(params).promise()
+				uploadS3.then(data => awsImages.push(data.Location))
+					.then(null, () => awsImages.push(images[index]))
+				promiseAll.push(uploadS3)
+			} else {
+				awsImages.push(images[index])
+			}
+		})
+
+		return Q.allSettled(promiseAll).then(() => awsImages)
 	}
 }
 
