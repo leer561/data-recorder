@@ -15,7 +15,6 @@ class CompareService extends Service {
 			const $ = cheerio.load(page)
 			return this.ctx.helper.getTags(webSite, $)
 		} catch (err) {
-			console.log('error',err)
 			this.app.logger.error('can not get webSite', webSite.site)
 			return []
 		}
